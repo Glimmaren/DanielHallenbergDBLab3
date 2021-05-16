@@ -63,16 +63,7 @@ namespace DanielHallenbergDBLab3
             var author = new EFDtataAccessLibary.Models.Författare();
             author.Id = Convert.ToInt32(txtBox_ID.Text);
             author.Förnamn = txtBox_editFörnamn.Text;
-            author.Efternamn = txtBox_EditEfternamn.Text;
-
-            if (DateTime.TryParse(txtBox_EditFödelsedatum.Text, out dateValue))
-            {
-                author.Födelsedatum = dateValue);
-            }
-            else
-            {
-                MessageBox.Show("Felaktigt Datum!, kolla så att du matat in rätt (YYYY-MM-DD)", "FEL!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            }          
+            author.Efternamn = txtBox_EditEfternamn.Text;        
 
             if (DateTime.TryParse(txtBox_AddFödelseDatum.Text, out dateValue))
             {
