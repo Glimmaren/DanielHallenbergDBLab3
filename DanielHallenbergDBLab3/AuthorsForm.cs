@@ -16,7 +16,7 @@ namespace DanielHallenbergDBLab3
         {
             InitializeComponent();
 
-            lstBox_Authors.DataSource = DataBaseCommand.GetFörfattare();
+            lstBox_Authors.DataSource = DataBaseCommand.GetAuthors();
         }
 
         private void AuthorsForm_Load(object sender, EventArgs e)
@@ -42,6 +42,7 @@ namespace DanielHallenbergDBLab3
                 txtBox_EditFödelsedatum.ReadOnly = true;
 
                 btn_Edit.Enabled = false;
+                btn_deleteAuthor.Enabled = false;
             }
         }
 
@@ -58,47 +59,73 @@ namespace DanielHallenbergDBLab3
 
         private void btn_Edit_Click(object sender, EventArgs e)
         {
+            DateTime dateValue;
             var author = new EFDtataAccessLibary.Models.Författare();
             author.Id = Convert.ToInt32(txtBox_ID.Text);
             author.Förnamn = txtBox_editFörnamn.Text;
             author.Efternamn = txtBox_EditEfternamn.Text;
-            author.Födelsedatum = Convert.ToDateTime(txtBox_EditFödelsedatum.Text);
 
-            DataBaseCommand.UpdateAuthor(author);
-            lstBox_Authors.DataSource = DataBaseCommand.GetFörfattare();
-            chkBox_Redigera.Checked = false;
+            if (DateTime.TryParse(txtBox_EditFödelsedatum.Text, out dateValue))
+            {
+                author.Födelsedatum = dateValue);
+            }
+            else
+            {
+                MessageBox.Show("Felaktigt Datum!, kolla så att du matat in rätt (YYYY-MM-DD)", "FEL!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }          
+
+            if (DateTime.TryParse(txtBox_AddFödelseDatum.Text, out dateValue))
+            {
+                author.Födelsedatum = dateValue;
+
+                DataBaseCommand.UpdateAuthor(author);
+                lstBox_Authors.DataSource = DataBaseCommand.GetAuthors();
+                chkBox_Redigera.Checked = false;
+            }
+            else
+            {
+                MessageBox.Show("Felaktigt Datum!, kolla så att du matat in rätt (YYYY-MM-DD)", "FEL!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+
+            }
         }
-
         private void btn_Add_Click(object sender, EventArgs e)
         {
-            //TODO: FIXA INDATA SÅ ATT DET INTE GÅR ATT MATA IN FEL
+            DateTime dateValue;
             var author = new EFDtataAccessLibary.Models.Författare();
             author.Id = 0;
             author.Förnamn = txtBox_AddFörnamn.Text;
             author.Efternamn = txtBox_AddEfternamn.Text;
-            author.Födelsedatum = Convert.ToDateTime(txtBox_AddFödelseDatum.Text);
 
-            if (!DataBaseCommand.CreateAuthor(author))
+            if (DateTime.TryParse(txtBox_AddFödelseDatum.Text, out dateValue))
             {
-                lstBox_Authors.DataSource = DataBaseCommand.GetFörfattare();
-                txtBox_AddFörnamn.Text = "";
-                txtBox_AddEfternamn.Text = "";
-                txtBox_AddFödelseDatum.Text = "";
+                author.Födelsedatum = dateValue;
+
+                if (DataBaseCommand.AddAuthor(author))
+                {
+                    lstBox_Authors.DataSource = DataBaseCommand.GetAuthors();
+                    txtBox_AddFörnamn.Text = "";
+                    txtBox_AddEfternamn.Text = "";
+                    txtBox_AddFödelseDatum.Text = "";
+                }
+                else
+                {
+                    MessageBox.Show("Författaren finns redan", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                }
             }
             else
             {
-                MessageBox.Show("Författaren finns redan", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show("Felaktigt Datum!, kolla så att du matat in rätt (YYYY-MM-DD)", "FEL!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+
             }            
         }
         private void btn_deleteAuthor_Click(object sender, EventArgs e)
         {
             DialogResult dialogResult = MessageBox.Show("Är du säker på att du vill ta bort vald författare?", "Varning!", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
-            if(dialogResult == DialogResult.Yes)
+            if (dialogResult == DialogResult.Yes)
             {
                 DataBaseCommand.DeleteAuthor(int.Parse(txtBox_ID.Text));
-                lstBox_Authors.DataSource = DataBaseCommand.GetFörfattare();
+                lstBox_Authors.DataSource = DataBaseCommand.GetAuthors();
             }
-
         }
     }
 }

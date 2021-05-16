@@ -35,7 +35,7 @@ namespace EFDtataAccessLibary.DataAccess
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Server=LAPTOP-0552K6O6;Database=Gewerts;Trusted_Connection=True;");
+                optionsBuilder.UseSqlServer("Server=LAPTOP-0552K6O6;Database=Gewerts;Trusted_Connection=True;"); //<--- Klipp in din ConnectionString här!!
             }
         }
 
@@ -46,34 +46,65 @@ namespace EFDtataAccessLibary.DataAccess
             modelBuilder.Entity<Bokförlag>(entity =>
             {
                 entity.HasKey(e => e.Namn)
-                    .HasName("PK__Bokförla__737584FC193FA552");
+                    .HasName("PK__Bokförla__737584FC11AC198E");
 
-                entity.Property(e => e.Namn).IsUnicode(false);
+                entity.ToTable("Bokförlag");
 
-                entity.Property(e => e.Land).IsUnicode(false);
+                entity.Property(e => e.Namn)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Land)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<Butiker>(entity =>
             {
-                entity.Property(e => e.Gatuadress).IsUnicode(false);
+                entity.ToTable("Butiker");
 
-                entity.Property(e => e.Namn).IsUnicode(false);
+                entity.Property(e => e.Id).HasColumnName("ID");
 
-                entity.Property(e => e.Ort).IsUnicode(false);
+                entity.Property(e => e.Gatuadress)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Namn)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Ort)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<Böcker>(entity =>
             {
                 entity.HasKey(e => e.Isbn)
-                    .HasName("PK__Böcker__447D36EB71DD55AF");
+                    .HasName("PK__Böcker__447D36EB25975B31");
 
-                entity.Property(e => e.Isbn).ValueGeneratedNever();
+                entity.ToTable("Böcker");
 
-                entity.Property(e => e.BokförlagNamn).IsUnicode(false);
+                entity.Property(e => e.Isbn)
+                    .ValueGeneratedNever()
+                    .HasColumnName("ISBN");
 
-                entity.Property(e => e.Språk).IsUnicode(false);
+                entity.Property(e => e.BokförlagNamn)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasColumnName("Bokförlag(Namn)");
 
-                entity.Property(e => e.Titel).IsUnicode(false);
+                entity.Property(e => e.Pris).HasColumnType("money");
+
+                entity.Property(e => e.Språk)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Titel)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Utgivningsdatum).HasColumnType("date");
 
                 entity.HasOne(d => d.BokförlagNamnNavigation)
                     .WithMany(p => p.Böckers)
@@ -85,7 +116,17 @@ namespace EFDtataAccessLibary.DataAccess
             modelBuilder.Entity<Dagsförsäljning>(entity =>
             {
                 entity.HasKey(e => new { e.ButiksId, e.Datum })
-                    .HasName("PK__Dagsförs__701907C05D942E2C");
+                    .HasName("PK__Dagsförs__701907C0B9FC8BCC");
+
+                entity.ToTable("Dagsförsäljning");
+
+                entity.HasIndex(e => e.ButiksId, "PK, FK");
+
+                entity.Property(e => e.ButiksId).HasColumnName("ButiksID");
+
+                entity.Property(e => e.Datum).HasColumnType("date");
+
+                entity.Property(e => e.Försäljning).HasColumnType("money");
 
                 entity.HasOne(d => d.Butiks)
                     .WithMany(p => p.Dagsförsäljnings)
@@ -95,19 +136,42 @@ namespace EFDtataAccessLibary.DataAccess
 
             modelBuilder.Entity<Författare>(entity =>
             {
-                entity.Property(e => e.Efternamn).IsUnicode(false);
+                entity.ToTable("Författare");
 
-                entity.Property(e => e.Förnamn).IsUnicode(false);
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.Efternamn)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Födelsedatum).HasColumnType("date");
+
+                entity.Property(e => e.Förnamn)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<FörfattareBöcker>(entity =>
             {
-                entity.HasKey(e => new { e.Isbn, e.FörfattareId })
-                    .HasName("PK__Författa__5C7927A686F247B3");
+                entity.HasKey(e => new { e.Isbn, e.Id })
+                    .HasName("PK__Författa__275C7829DE8C7CBB");
+
+                entity.ToTable("Författare_Böcker");
+
+                entity.HasIndex(e => e.Isbn, "PK, FK");
+
+                entity.Property(e => e.Isbn).HasColumnName("ISBN");
+
+                entity.Property(e => e.Id)
+                    .ValueGeneratedOnAdd()
+                    .HasColumnName("ID");
+
+                entity.Property(e => e.FörfattareId).HasColumnName("FörfattareID");
 
                 entity.HasOne(d => d.Författare)
                     .WithMany(p => p.FörfattareBöckers)
                     .HasForeignKey(d => d.FörfattareId)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK__Författar__Förfa__3C69FB99");
 
                 entity.HasOne(d => d.IsbnNavigation)
@@ -119,15 +183,53 @@ namespace EFDtataAccessLibary.DataAccess
 
             modelBuilder.Entity<FörsäljningsStatistik>(entity =>
             {
+                entity.HasNoKey();
+
                 entity.ToView("FörsäljningsStatistik");
 
-                entity.Property(e => e.Namn).IsUnicode(false);
+                entity.Property(e => e.BästaDag).HasColumnType("money");
+
+                entity.Property(e => e.Namn)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.TotYtd)
+                    .HasColumnType("money")
+                    .HasColumnName("TotYTD");
+
+                entity.Property(e => e.TotalFörsäljning).HasColumnType("money");
+
+                entity.Property(e => e.TotföregåendeÅr)
+                    .HasColumnType("money")
+                    .HasColumnName("TOTFöregåendeÅr");
+
+                entity.Property(e => e.TotmedelDagsFörsäljning)
+                    .HasColumnType("money")
+                    .HasColumnName("TOTMedelDagsFörsäljning");
+
+                entity.Property(e => e.TotmedleFöregåendeÅr)
+                    .HasColumnType("money")
+                    .HasColumnName("TOTMedleFöregåendeÅr");
             });
 
             modelBuilder.Entity<Inköpsorder>(entity =>
             {
                 entity.HasKey(e => new { e.Ordernummer, e.Isbn })
-                    .HasName("PK__Inköpsor__4613DB21E9FA3B2C");
+                    .HasName("PK__Inköpsor__4613DB21C04A7689");
+
+                entity.ToTable("Inköpsorder");
+
+                entity.HasIndex(e => e.Isbn, "PK, FK");
+
+                entity.Property(e => e.Isbn).HasColumnName("ISBN");
+
+                entity.Property(e => e.ButiksId).HasColumnName("ButiksID");
+
+                entity.Property(e => e.LeveransDatum).HasColumnType("date");
+
+                entity.Property(e => e.PrisÁ)
+                    .HasColumnType("money")
+                    .HasColumnName("Pris á");
 
                 entity.HasOne(d => d.Butiks)
                     .WithMany(p => p.Inköpsorders)
@@ -144,7 +246,15 @@ namespace EFDtataAccessLibary.DataAccess
             modelBuilder.Entity<LagerSaldo>(entity =>
             {
                 entity.HasKey(e => new { e.Isbn, e.ButiksId })
-                    .HasName("PK__LagerSal__D6C35890ACC28E44");
+                    .HasName("PK__LagerSal__D6C358903121B2D5");
+
+                entity.ToTable("LagerSaldo");
+
+                entity.HasIndex(e => new { e.ButiksId, e.Isbn }, "PK, FK");
+
+                entity.Property(e => e.Isbn).HasColumnName("ISBN");
+
+                entity.Property(e => e.ButiksId).HasColumnName("ButiksID");
 
                 entity.HasOne(d => d.Butiks)
                     .WithMany(p => p.LagerSaldos)
@@ -160,11 +270,21 @@ namespace EFDtataAccessLibary.DataAccess
             modelBuilder.Entity<Personal>(entity =>
             {
                 entity.HasKey(e => e.Anställningsnummer)
-                    .HasName("PK__Personal__A6FF8FFFF6087420");
+                    .HasName("PK__Personal__A6FF8FFF213C3B95");
 
-                entity.Property(e => e.Efternamn).IsUnicode(false);
+                entity.ToTable("Personal");
 
-                entity.Property(e => e.Förnamn).IsUnicode(false);
+                entity.Property(e => e.ArbetsplatsButiksId).HasColumnName("Arbetsplats(ButiksID)");
+
+                entity.Property(e => e.Efternamn)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Födelsedatum).HasColumnType("date");
+
+                entity.Property(e => e.Förnamn)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
 
                 entity.HasOne(d => d.ArbetsplatsButiks)
                     .WithMany(p => p.Personals)
@@ -175,9 +295,18 @@ namespace EFDtataAccessLibary.DataAccess
 
             modelBuilder.Entity<TitlarPerFörfattare>(entity =>
             {
+                entity.HasNoKey();
+
                 entity.ToView("TitlarPerFörfattare");
 
-                entity.Property(e => e.Namn).IsUnicode(false);
+                entity.Property(e => e.LagervärdeUtpris)
+                    .HasColumnType("money")
+                    .HasColumnName("Lagervärde(Utpris)");
+
+                entity.Property(e => e.Namn)
+                    .IsRequired()
+                    .HasMaxLength(101)
+                    .IsUnicode(false);
             });
 
             OnModelCreatingPartial(modelBuilder);

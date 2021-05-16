@@ -14,11 +14,11 @@ namespace DanielHallenbergDBLab3
         public decimal Price { get; set; }
         public DateTime ReleaseDay { get; set; }
         public EFDtataAccessLibary.Models.Bokförlag Publisher { get; set; }
-        public string AuthorName { get; set; }
-        public string AuthorFirstName { get; set; }
-        public int AuthorID { get; set; }
+        public List<EFDtataAccessLibary.Models.Författare> Authors { get; set; }
+        public List<EFDtataAccessLibary.Models.Författare> NewAuthors { get; set; }
+  
 
-        public TempBook(long iSBN, string title, string language, decimal? price, DateTime? releaseDay, EFDtataAccessLibary.Models.Bokförlag publisher, string authorFirstName, string authorsLastName, int authorID)
+        public TempBook(long iSBN, string title, string language, decimal? price, DateTime? releaseDay, EFDtataAccessLibary.Models.Bokförlag publisher)
         {
             ISBN = iSBN;
             Title = title;
@@ -26,9 +26,11 @@ namespace DanielHallenbergDBLab3
             Price = price.Value;
             ReleaseDay = releaseDay.Value;
             Publisher = publisher;
-            AuthorName = authorFirstName + " " + authorsLastName;
-            AuthorID = authorID;
+            Authors = new List<EFDtataAccessLibary.Models.Författare>();
+            NewAuthors = new List<EFDtataAccessLibary.Models.Författare>();
+
         }
+
 
     }
 }

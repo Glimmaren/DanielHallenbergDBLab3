@@ -29,12 +29,16 @@ namespace DanielHallenbergDBLab3
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.cmbBox_ValdButik = new System.Windows.Forms.ComboBox();
             this.lstBox_Lager = new System.Windows.Forms.ListBox();
             this.btn_ändraSaldo = new System.Windows.Forms.Button();
             this.txt_Ammount = new System.Windows.Forms.TextBox();
             this.btn_EtitAuthor = new System.Windows.Forms.Button();
             this.btn_editBooks = new System.Windows.Forms.Button();
+            this.bindingSource1 = new System.Windows.Forms.BindingSource(this.components);
+            this.btn_update = new System.Windows.Forms.Button();
+            ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).BeginInit();
             this.SuspendLayout();
             // 
             // cmbBox_ValdButik
@@ -54,6 +58,7 @@ namespace DanielHallenbergDBLab3
             this.lstBox_Lager.Name = "lstBox_Lager";
             this.lstBox_Lager.Size = new System.Drawing.Size(342, 364);
             this.lstBox_Lager.TabIndex = 1;
+            this.lstBox_Lager.SelectedIndexChanged += new System.EventHandler(this.lstBox_Lager_SelectedIndexChanged);
             // 
             // btn_ändraSaldo
             // 
@@ -94,11 +99,22 @@ namespace DanielHallenbergDBLab3
             this.btn_editBooks.UseVisualStyleBackColor = true;
             this.btn_editBooks.Click += new System.EventHandler(this.btn_editBooks_Click);
             // 
+            // btn_update
+            // 
+            this.btn_update.Location = new System.Drawing.Point(360, 419);
+            this.btn_update.Name = "btn_update";
+            this.btn_update.Size = new System.Drawing.Size(155, 47);
+            this.btn_update.TabIndex = 6;
+            this.btn_update.Text = "Uppdatera Lilstan";
+            this.btn_update.UseVisualStyleBackColor = true;
+            this.btn_update.Click += new System.EventHandler(this.btn_update_Click);
+            // 
             // GewertsMainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(935, 651);
+            this.Controls.Add(this.btn_update);
             this.Controls.Add(this.btn_editBooks);
             this.Controls.Add(this.btn_EtitAuthor);
             this.Controls.Add(this.txt_Ammount);
@@ -107,6 +123,7 @@ namespace DanielHallenbergDBLab3
             this.Controls.Add(this.cmbBox_ValdButik);
             this.Name = "GewertsMainForm";
             this.Text = "Gewerts";
+            ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -120,6 +137,8 @@ namespace DanielHallenbergDBLab3
         private System.Windows.Forms.TextBox txt_Ammount;
         private System.Windows.Forms.Button btn_EtitAuthor;
         private System.Windows.Forms.Button btn_editBooks;
+        private System.Windows.Forms.BindingSource bindingSource1;
+        private System.Windows.Forms.Button btn_update;
     }
 }
 
